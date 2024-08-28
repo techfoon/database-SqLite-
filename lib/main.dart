@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:db_practice/data/local/db_helper.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,6 +17,10 @@ class MyApp extends StatelessWidget {
 class MyAppDash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    DBHeloper MyDbStatic = DBHeloper.getInstance();
+
+    
     return Scaffold(
       appBar: AppBar(
         title: Text("hellow this is my app"),
