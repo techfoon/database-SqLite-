@@ -1,33 +1,38 @@
 import 'dart:io';
 
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+//import 'path_finder.dart'
 
-class DBHelper {
-  DBHelper._(); // create private constructor
+class DBhelper {
+  DBhelper._();
 
-  static DBHelper getInstance() {
-    return DBHelper._(); //
+  static DBhelper getInstance() {
+    return DBhelper._();
   }
 
-  Database? DBvar;
-
+  Database? myDB;
   Future<Database> getDb() async {
-    /// path data/data/yourPackageName/databases
-    Directory appDirectory = await getApplicationDocumentsDirectory();
+    if (myDB == null) {
+      myDB = await openDb();
+    }
 
-    String rootPath = appDirectory.path;
+    return myDB!;
+  }
 
-    /// path data/data/yourPackageName/databases/notes.db
-    String dbPath = join(rootPath, "notes.db");
+  Future<Database> openDb() async {
+    // path data/data/yourPackageName/database
+    Directory appDirectory = await getApplicationCacheDirectory();
 
-    return openDatabase(
-      dbPath,
-      version: 1,
-      onCreate: (db, version) {
-        db.execute('CREATE TABLE my_table(id INTEGER PRIMARY KEY, name TEXT)');
-      }
-    );
+    String rootpath = appDirectory.path;
+
+    String dbPath = join(rootpath,
+        "notes.db"); // path data/data/yourPackageName/database/notes.db
+    return await openDatabase(dbPath, version: 1, onCreate: (db, version) {
+      //table created
+      db.rawQuery(
+          "create table noteData(s_no integer primary key autoincrement, title text, decription, text)");
+    });
   }
 }

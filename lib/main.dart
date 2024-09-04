@@ -17,10 +17,8 @@ class MyApp extends StatelessWidget {
 class MyAppDash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    DBhelper db = DBhelper.getInstance();
 
-    DBHelper MyDbStatic = DBHelper.getInstance();
-
-    
     return Scaffold(
       appBar: AppBar(
         title: Text("hellow this is my app"),
