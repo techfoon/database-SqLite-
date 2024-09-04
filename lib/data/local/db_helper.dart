@@ -12,6 +12,11 @@ class DBhelper {
     return DBhelper._();
   }
 
+  static final String tableNote = "noteData";
+  static final String noteDataTitle = "title";
+  static final String noteDataDesc = "desc";
+
+//Getting DataBase
   Database? myDB;
   Future<Database> getDb() async {
     if (myDB == null) {
@@ -21,6 +26,7 @@ class DBhelper {
     return myDB!;
   }
 
+//Opening DataBase
   Future<Database> openDb() async {
     // path data/data/yourPackageName/database
     Directory appDirectory = await getApplicationCacheDirectory();
@@ -32,7 +38,15 @@ class DBhelper {
     return await openDatabase(dbPath, version: 1, onCreate: (db, version) {
       //table created
       db.rawQuery(
-          "create table noteData(s_no integer primary key autoincrement, title text, decription, text)");
+          "create table $tableNote (s_no integer primary key autoincrement, $noteDataTitle text, $noteDataDesc, text)");
     });
+  }
+
+  ///queries
+
+  ///Insertdata
+  void addNote({required String title, required String desc}) async {
+    var db = await getDb();
+    db.insert(tableNote, {noteDataTitle: title, noteDataDesc: desc});
   }
 }
