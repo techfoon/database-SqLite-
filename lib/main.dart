@@ -18,7 +18,7 @@ class MyAppDash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    DBHeloper MyDbStatic = DBHeloper.getInstance();
+    DBHelper MyDbStatic = DBHelper.getInstance();
 
     
     return Scaffold(
