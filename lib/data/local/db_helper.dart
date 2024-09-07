@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,6 +14,8 @@ class DBhelper {
   static final String tableNote = "noteData";
   static final String noteDataTitle = "title";
   static final String noteDataDesc = "desc";
+  static final String s_no = "s_no";
+
 
 //Getting DataBase
   Database? myDB;
@@ -38,15 +39,27 @@ class DBhelper {
     return await openDatabase(dbPath, version: 1, onCreate: (db, version) {
       //table created
       db.rawQuery(
-          "create table $tableNote (s_no integer primary key autoincrement, $noteDataTitle text, $noteDataDesc, text)");
+          "create table $tableNote ($s_no integer primary key autoincrement, $noteDataTitle text, $noteDataDesc, text)");
     });
   }
 
   ///queries
 
   ///Insertdata
-  void addNote({required String title, required String desc}) async {
+  Future<bool> addNote({required String title, required String desc}) async {
     var db = await getDb();
-    db.insert(tableNote, {noteDataTitle: title, noteDataDesc: desc});
+   int rowsEffected= await db.insert(tableNote, {noteDataTitle: title, noteDataDesc: desc});
+
+    return rowsEffected > 0;
+  }
+
+  //get all data(data Fetching)
+
+  Future<List<Map<String, dynamic>>> getAllNotes() async {
+    var db = await getDb();
+    // return db.rawQuery("select*from $tableNote");
+
+    var allNotes = await db.query(tableNote);
+    return allNotes;
   }
 }
