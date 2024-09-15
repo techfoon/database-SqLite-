@@ -20,41 +20,44 @@ class MyAppDash extends StatefulWidget {
 }
 
 class _MyAppDashState extends State<MyAppDash> {
-  DBhelper? mainDB;
   List<Map<String, dynamic>> allNotes = [];
+
+  DBHelper? mainDB;
+
   @override
   void initState() {
-    // TODO: implement initState
+   
     super.initState();
-    mainDB = DBhelper.getInstance();
-    mainDB!.getAllNotes();
+     mainDB = DBHelper.getInstance;
     getInitialNotes();
   }
 
-  void getInitialNotes() async {
+  getInitialNotes() async {
     allNotes = await mainDB!.getAllNotes();
-    setState(() {});
+    setState(() {
+      
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("hellow this is my app"),
+        title: Text("App#1"),
       ),
       body: allNotes.isNotEmpty
           ? ListView.builder(
               itemCount: allNotes.length,
               itemBuilder: (_, index) {
                 return ListTile(
-                  title: Text(allNotes[index][DBhelper.noteDataTitle]),
-                  subtitle: Text(allNotes[index][DBhelper.noteDataDesc]),
+                  title: Text(allNotes[index][DBHelper.Columntitle]),
+                  subtitle: Text(allNotes[index][DBHelper.columndescription]),
                 );
               })
           : Text("no notes found"),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          mainDB!.addNote(title: "rahul", desc: "is a boy");
+          mainDB!.addNote(title: "kumar", desc: "baman");
           getInitialNotes();
         },
         child: Icon(Icons.add),
