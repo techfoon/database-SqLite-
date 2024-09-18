@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,10 +21,9 @@ class DBHelper {
   Future<Database> getDb() async {
     if (myDB == null) {
       myDB = await openDb();
-       stdout.write("DatBase is not availabe but created");
+      stdout.write("DatBase is not availabe but created");
     } else {
       stdout.write("DatBase is available");
-     
     }
 
     return myDB!;
@@ -48,9 +48,10 @@ class DBHelper {
   ///insert
   Future<bool> addNote({required String title, required String desc}) async {
     var db = await getDb();
-    int rowsEffected = await db.insert(notesDataTable, {Columntitle: title, columndescription: desc});
+    int rowsEffected = await db
+        .insert(notesDataTable, {Columntitle: title, columndescription: desc});
 
- stdout.write("method is called return: $rowsEffected");           
+    stdout.write("method is called return: $rowsEffected");
     return rowsEffected > 0;
   }
 
@@ -61,4 +62,42 @@ class DBHelper {
 
     return allNotes;
   }
+
+  ///delete the specific data
+ Future<int> deleteNotes({required int rowIndex}) async {
+  var db = await getDb();
+
+  // Use rawDelete for delete operations
+  int deletedCount = await db.rawDelete(
+      "DELETE FROM $notesDataTable WHERE s_no = ?", [rowIndex]);
+
+  return deletedCount; // Returns the number of rows affected
 }
+
+
+  ///Update the specific data
+
+Future<int> updateNotes({
+  required int rowIndex,
+  required String rowTitle,
+  required String rowDescription,
+}) async {
+  var db = await getDb();
+
+  // Use rawUpdate for update operations
+  int updatedCount = await db.rawUpdate(
+    "UPDATE $notesDataTable SET $Columntitle = ?, $columndescription = ? WHERE s_no = ?",
+    [rowTitle, rowDescription, rowIndex]
+  );
+
+  return updatedCount; // Returns the number of rows affected
+}
+/*
+Used rawUpdate instead of rawQuery.
+Returned int to indicate the number of rows updated.
+Used placeholders (?) to safely pass values and avoid SQL injection risks.
+Removed the incorrect from keyword from the UPDATE query.*/
+
+}
+
+
