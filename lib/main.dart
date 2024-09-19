@@ -71,7 +71,11 @@ class _MyAppDashState extends State<MyAppDash> {
                   title: Text(allNotes[index][DBHelper.Columntitle]),
                   subtitle: Text(allNotes[index][DBHelper.columndescription]),
                   onLongPress: () {
-                 showDialog(
+                    updateTitleController.text =
+                        allNotes[index][DBHelper.Columntitle];
+                        updateDescriptionController.text =
+                        allNotes[index][DBHelper.columndescription];
+                    showModalBottomSheet(
                         context: context,
                         builder: (_) {
                           return Container(
@@ -129,7 +133,7 @@ class _MyAppDashState extends State<MyAppDash> {
                             ]),
                           );
                         });
-                },
+                  },
                 );
               })
           : Text("no notes found"),
@@ -221,26 +225,31 @@ class _MyAppDashState extends State<MyAppDash> {
 
   ////updation function
 
-  updateNotesInDB({required int updateIndex}) async {
-    var updateFormTitle = updateTitleController.text.toString();
-    var updateFormDescription = updateDescriptionController.text.toString();
+  void updateNotesInDB({required int updateIndex}) async {
+    // Fetch the updated values from the controllers
+    var updateFormTitle = updateTitleController.text.trim();
+    var updateFormDescription = updateDescriptionController.text.trim();
 
-   bool check= mainDB!.updateNotes(
+    // Update the note in the database
+    int check = await mainDB!.updateNotes(
         rowIndex: updateIndex,
         rowTitle: updateFormTitle,
-        rowDescription: updateFormDescription) as bool;
+        rowDescription: updateFormDescription);
 
-  String msg;
-        
-    if (!check) {
-      msg = "note updation is failed";
+    // Prepare a message based on the success/failure of the update
+    String msg;
+    if (check < 0) {
+      msg = "Note update failed";
     } else {
-      msg = "note updated Successfully";
+      msg = "Note updated successfully";
+      // Reload the notes after a successful update
       getInitialNotes();
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-
-
+    // Show a snackbar with the appropriate message
+    if (context.mounted) {
+      // Ensure context is still valid
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    }
   }
 }
