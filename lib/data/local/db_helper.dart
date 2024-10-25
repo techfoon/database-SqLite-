@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:developer'; // for creating logs
+import 'package:db_practice/model/mymodel.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import '';
 
 class DBHelper {
   DBHelper._();
@@ -22,7 +24,6 @@ class DBHelper {
     if (myDB == null) {
       myDB = await openDb();
     } else {
-      
       log("Database is available");
     }
 
@@ -37,22 +38,21 @@ class DBHelper {
 
     /// path data/data/yourPackageName/databases/notes.db
     String dbPath = join(rootPath, "notes.db");
-        log("Database Created");
-        log("Table is Created");
+    log("Database Created");
+    log("Table is Created");
     return await openDatabase(dbPath, version: 1, onCreate: (db, version) {
-     
       db.rawQuery(
           "create table $notesDataTable($s_no integer primary key autoincrement, $Columntitle text, $columndescription text)");
-      
     });
   }
 
   //queries
   ///insert
-  Future<bool> addNote({required String title, required String desc}) async {
+  Future<bool> addNote({required NoteModel newModel}) async {
     var db = await getDb();
-    int rowsEffected = await db
-        .insert(notesDataTable, {Columntitle: title, columndescription: desc});
+
+    // newModel.toMap();
+    int rowsEffected = await db.insert(notesDataTable, newModel.toMap());
 
     stdout.write("method is called return: $rowsEffected");
     log("Data is Inserted");
@@ -61,12 +61,20 @@ class DBHelper {
   }
 
   ///get all data
-  Future<List<Map<String, dynamic>>> getAllNotes() async {
+  Future<List<NoteModel>> getAllNotes() async {
     var db = await getDb();
+
+    List<NoteModel> mNotes = [];
     var allNotes = await db.query(notesDataTable);
     log("Data is Fetching");
 
-    return allNotes;
+    for (Map<String, dynamic> eachNote in allNotes) {
+      NoteModel eachModle = NoteModel.fromMap(eachNote);
+
+      mNotes.add(eachModle);
+    }
+
+    return mNotes;
   }
 
   ///delete the specific data

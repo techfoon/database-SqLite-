@@ -1,3 +1,4 @@
+import 'package:db_practice/model/mymodel.dart';
 import 'package:db_practice/providers/crudProvider.dart';
 import 'package:db_practice/providers/test.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,7 +33,7 @@ class _MyAppDashState extends State<MyAppDash> {
 
   TextEditingController updateTitleController = TextEditingController();
   TextEditingController updateDescriptionController = TextEditingController();
-  List<Map<String, dynamic>> allNotes = [];
+  List<NoteModel> allNotes = [];
 
   //DBHelper? mainDB;   // no need due to provider
 
@@ -67,28 +68,28 @@ class _MyAppDashState extends State<MyAppDash> {
                   leading: Text.rich(
                     TextSpan(
                         text:
-                            "Sn:${allNotes[index][DBHelper.s_no].toString()}\n",
+                            "Sn:${allNotes[index].Model_sN.toString()}\n",
                         children: [
                           TextSpan(text: "In:${index.toString()}"),
                         ]),
                   ),
                   trailing: IconButton(
                       onPressed: () {
-                        Provider.of<CurdProvider>(context, listen: false)
-                            .deleteNotes(
-                                uIndex: allNotes[index][DBHelper.s_no]);
+                        /*     Provider.of<CurdProvider>(context, listen: false)
+                        .deleteNotes(
+                                uIndex: allNotes[index][DBHelper.s_no]);*/
                         /*        mainDB!.deleteNotes(
                             rowIndex: allNotes[index][DBHelper.s_no]);*/
                         getInitialNotes();
                       },
                       icon: Icon(Icons.delete)),
-                  title: Text(allNotes[index][DBHelper.Columntitle]),
-                  subtitle: Text(allNotes[index][DBHelper.columndescription]),
+                  title: Text(allNotes[index].Model_title),
+                  subtitle: Text(allNotes[index].Model_description),
                   onLongPress: () {
                     updateTitleController.text =
-                        allNotes[index][DBHelper.Columntitle];
+                        allNotes[index].Model_title;
                     updateDescriptionController.text =
-                        allNotes[index][DBHelper.columndescription];
+                        allNotes[index].Model_description;
                     showModalBottomSheet(
                         context: context,
                         builder: (_) {
@@ -131,9 +132,9 @@ class _MyAppDashState extends State<MyAppDash> {
                                 children: [
                                   OutlinedButton(
                                       onPressed: () {
-                                        updateNotesInDB(
+                                        /*  updateNotesInDB(
                                             updateIndex: allNotes[index]
-                                                [DBHelper.s_no]);
+                                                [DBHelper.s_no]); */
                                         Navigator.pop(context);
                                       },
                                       child: Text("update")),
@@ -221,8 +222,9 @@ class _MyAppDashState extends State<MyAppDash> {
     var formTitle = titleController.text.toString();
     var formDescription = descriptionController.text.toString();
 
-    Provider.of<CurdProvider>(context, listen: false)
-        .addingNotes(DTitle: formTitle, DDescription: formDescription);
+    Provider.of<CurdProvider>(context, listen: false).addingNotes(
+        newNote: NoteModel(
+            Model_title: formTitle, Model_description: formDescription));
 /*
     bool check = await mainDB!.addNote(title: formTitle, desc: formDescription);
 
@@ -244,7 +246,7 @@ class _MyAppDashState extends State<MyAppDash> {
   }
 
   ////updation function
-  void updateNotesInDB({required int updateIndex}) async {
+  /* void updateNotesInDB({required int updateIndex}) async {
     // Fetch the updated values from the controllers
     var updateFormTitle = updateTitleController.text.trim();
     var updateFormDescription = updateDescriptionController.text.trim();
@@ -276,5 +278,5 @@ class _MyAppDashState extends State<MyAppDash> {
       // Ensure context is still valid
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     }*/
-  }
+  } */
 }
