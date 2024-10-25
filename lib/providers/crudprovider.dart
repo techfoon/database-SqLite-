@@ -21,9 +21,24 @@ class CurdProvider extends ChangeNotifier {
     }
   }
 
+  void updateNotes(
+      {required int uIndex,
+      required String utitle,
+      required String udescription}) async {
+    var isNoteupdated = await mainDB.updateNotes(
+        rowIndex: uIndex, rowTitle: utitle, rowDescription: udescription);
+    _allData = await mainDB.getAllNotes();
+    notifyListeners();
+  }
+
+  void deleteNotes({required int uIndex}) async {
+    var delNotes = await mainDB.deleteNotes(rowIndex: uIndex);
+
+    _allData = await mainDB.getAllNotes();
+    notifyListeners();
+  }
+
   /// geting notes
-  ///
-  ///
 
   void getInitNotes() async {
     _allData = await mainDB.getAllNotes();

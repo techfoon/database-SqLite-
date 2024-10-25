@@ -45,7 +45,9 @@ class _MyAppDashState extends State<MyAppDash> {
 
   getInitialNotes() async {
     //  allNotes = await mainDB!.getAllNotes();
-    context.read<CurdProvider>().getInitNotes(); //āp load hote time ye subko inform kerta hai hai
+    context
+        .read<CurdProvider>()
+        .getInitNotes(); //āp load hote time ye subko inform kerta hai hai
     //   setState(() {});
   }
 
@@ -72,7 +74,10 @@ class _MyAppDashState extends State<MyAppDash> {
                   ),
                   trailing: IconButton(
                       onPressed: () {
-                /*        mainDB!.deleteNotes(
+                        Provider.of<CurdProvider>(context, listen: false)
+                            .deleteNotes(
+                                uIndex: allNotes[index][DBHelper.s_no]);
+                        /*        mainDB!.deleteNotes(
                             rowIndex: allNotes[index][DBHelper.s_no]);*/
                         getInitialNotes();
                       },
@@ -126,9 +131,9 @@ class _MyAppDashState extends State<MyAppDash> {
                                 children: [
                                   OutlinedButton(
                                       onPressed: () {
-                                      /*  updateNotesInDB(
+                                        updateNotesInDB(
                                             updateIndex: allNotes[index]
-                                                [DBHelper.s_no]);*/
+                                                [DBHelper.s_no]);
                                         Navigator.pop(context);
                                       },
                                       child: Text("update")),
@@ -239,12 +244,17 @@ class _MyAppDashState extends State<MyAppDash> {
   }
 
   ////updation function
-
- /* void updateNotesInDB({required int updateIndex}) async {
+  void updateNotesInDB({required int updateIndex}) async {
     // Fetch the updated values from the controllers
     var updateFormTitle = updateTitleController.text.trim();
     var updateFormDescription = updateDescriptionController.text.trim();
 
+    Provider.of<CurdProvider>(context, listen: false).updateNotes(
+        uIndex: updateIndex,
+        utitle: updateFormTitle,
+        udescription: updateFormDescription);
+
+/*
     // Update the note in the database
     int check = await mainDB!.updateNotes(
         rowIndex: updateIndex,
@@ -265,6 +275,6 @@ class _MyAppDashState extends State<MyAppDash> {
     if (context.mounted) {
       // Ensure context is still valid
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-    }
-  }*/
+    }*/
+  }
 }
