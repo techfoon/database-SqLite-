@@ -67,17 +67,16 @@ class _MyAppDashState extends State<MyAppDash> {
                 return ListTile(
                   leading: Text.rich(
                     TextSpan(
-                        text:
-                            "Sn:${allNotes[index].Model_sN.toString()}\n",
+                        text: "Sn:${allNotes[index].Model_sN}\n",
                         children: [
+                          TextSpan(text: "(In+1): ${index + 1} \n"),
                           TextSpan(text: "In:${index.toString()}"),
                         ]),
                   ),
                   trailing: IconButton(
                       onPressed: () {
-                        /*     Provider.of<CurdProvider>(context, listen: false)
-                        .deleteNotes(
-                                uIndex: allNotes[index][DBHelper.s_no]);*/
+                        Provider.of<CurdProvider>(context, listen: false)
+                            .deleteNotes(uIndex: allNotes[index].Model_sN!);
                         /*        mainDB!.deleteNotes(
                             rowIndex: allNotes[index][DBHelper.s_no]);*/
                         getInitialNotes();
@@ -85,9 +84,8 @@ class _MyAppDashState extends State<MyAppDash> {
                       icon: Icon(Icons.delete)),
                   title: Text(allNotes[index].Model_title),
                   subtitle: Text(allNotes[index].Model_description),
-                  onLongPress: () {
-                    updateTitleController.text =
-                        allNotes[index].Model_title;
+                  onTap: () {
+                    updateTitleController.text = allNotes[index].Model_title;
                     updateDescriptionController.text =
                         allNotes[index].Model_description;
                     showModalBottomSheet(
@@ -132,9 +130,8 @@ class _MyAppDashState extends State<MyAppDash> {
                                 children: [
                                   OutlinedButton(
                                       onPressed: () {
-                                        /*  updateNotesInDB(
-                                            updateIndex: allNotes[index]
-                                                [DBHelper.s_no]); */
+                                        updateNotesInDB(
+                                            updateIndex: allNotes[index].Model_sN!);
                                         Navigator.pop(context);
                                       },
                                       child: Text("update")),
@@ -246,15 +243,14 @@ class _MyAppDashState extends State<MyAppDash> {
   }
 
   ////updation function
-  /* void updateNotesInDB({required int updateIndex}) async {
+   void updateNotesInDB({required int updateIndex}) async {
     // Fetch the updated values from the controllers
     var updateFormTitle = updateTitleController.text.trim();
     var updateFormDescription = updateDescriptionController.text.trim();
 
-    Provider.of<CurdProvider>(context, listen: false).updateNotes(
+    Provider.of<CurdProvider>(context, listen: false).updateProviderNotes(
         uIndex: updateIndex,
-        utitle: updateFormTitle,
-        udescription: updateFormDescription);
+        newNote: NoteModel(Model_title: updateFormTitle, Model_description: updateFormDescription));
 
 /*
     // Update the note in the database
@@ -278,5 +274,5 @@ class _MyAppDashState extends State<MyAppDash> {
       // Ensure context is still valid
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     }*/
-  } */
+  } 
 }

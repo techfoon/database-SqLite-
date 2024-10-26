@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import '';
 
 class DBHelper {
   DBHelper._();
@@ -77,8 +76,23 @@ class DBHelper {
     return mNotes;
   }
 
+  ///Update the specific data
+
+  Future<bool> updateNotes(
+      {required int rowIndex, required NoteModel newModel}) async {
+    var db = await getDb();
+
+    log("updating");
+    // Use rawUpdate for update operations
+   int updatedCount = await db.rawUpdate(
+        "UPDATE $notesDataTable SET $Columntitle = ?, $columndescription = ? WHERE s_no = ?",
+        [newModel.Model_title, newModel.Model_description, rowIndex]);
+
+    return updatedCount>0; // Returns the number of rows affected
+  }
+
   ///delete the specific data
-  Future<int> deleteNotes({required int rowIndex}) async {
+  Future<bool> deleteNotes({required int rowIndex}) async {
     var db = await getDb();
 
     // Use rawDelete for delete operations
@@ -86,25 +100,9 @@ class DBHelper {
         .rawDelete("DELETE FROM $notesDataTable WHERE s_no = ?", [rowIndex]);
     log("Data is Deleted");
 
-    return deletedCount; // Returns the number of rows affected
+    return deletedCount>0; // Returns the number of rows affected
   }
 
-  ///Update the specific data
-
-  Future<int> updateNotes({
-    required int rowIndex,
-    required String rowTitle,
-    required String rowDescription,
-  }) async {
-    var db = await getDb();
-
-    // Use rawUpdate for update operations
-    int updatedCount = await db.rawUpdate(
-        "UPDATE $notesDataTable SET $Columntitle = ?, $columndescription = ? WHERE s_no = ?",
-        [rowTitle, rowDescription, rowIndex]);
-
-    return updatedCount; // Returns the number of rows affected
-  }
 /*
 Used rawUpdate instead of rawQuery.
 Returned int to indicate the number of rows updated.
